@@ -285,8 +285,8 @@
   "status": {
     "kind": "running"
   },
-  "status_updated_at": "2026-05-27T03:32:25.247093793Z",
-  "last_event_at": "2026-05-27T03:32:26.392500960Z",
+  "status_updated_at": "2026-05-27T03:32:36.682893340Z",
+  "last_event_at": "2026-05-27T03:32:36.682893340Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -326,9 +326,9 @@
       "diff": {}
     },
     {
-      "seq": 0,
+      "seq": 36,
       "checkpoint": {
-        "timestamp": "2026-05-27T03:32:26.545656710Z",
+        "timestamp": "2026-05-27T03:32:29.131163087Z",
         "current_node": "plan",
         "completed_nodes": [
           "start",
@@ -336,20 +336,20 @@
         ],
         "node_retries": {},
         "context_values": {
+          "thread.start.current_node": "plan",
           "failure_signature": "plan|deterministic|api_deterministic|litellm|invalid_request",
           "graph.goal": "Plan, approve, implement, and simplify a change",
-          "internal.thread_id": "start",
-          "internal.work_dir": "/workspace/fabro",
-          "thread.start.current_node": "plan",
-          "internal.node_visit_count": 1,
-          "current_node": "plan",
-          "internal.retry_count.start": 0,
-          "failure_class": "deterministic",
-          "internal.retry_count.plan": 0,
           "graph.rankdir": "LR",
+          "internal.retry_count.start": 0,
           "internal.run_id": "01KSKQV48SY4SZNY8N03XYACA8",
-          "internal.fidelity": "compact",
-          "outcome": "failed"
+          "current_node": "plan",
+          "failure_class": "deterministic",
+          "internal.thread_id": "start",
+          "internal.retry_count.plan": 0,
+          "internal.work_dir": "/workspace/fabro",
+          "internal.node_visit_count": 1,
+          "outcome": "failed",
+          "internal.fidelity": "compact"
         },
         "node_outcomes": {
           "plan": {
@@ -367,15 +367,68 @@
           }
         },
         "next_node_id": "approve",
+        "git_commit_sha": "0900adcdd74f46067aacecfe4cf3075e673cc007",
+        "loop_failure_signatures": {
+          "plan|deterministic|api_deterministic|litellm|invalid_request": 1
+        },
         "node_visits": {
-          "start": 1,
-          "plan": 1
+          "plan": 1,
+          "start": 1
         }
       },
-      "diff": {}
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
     }
   ],
-  "conclusion": null,
+  "conclusion": {
+    "timestamp": "2026-05-27T03:32:36.684697174Z",
+    "status": "failed",
+    "timing": {
+      "wall_time_ms": 11436,
+      "inference_time_ms": 0,
+      "tool_time_ms": 0,
+      "active_time_ms": 0
+    },
+    "failure": {
+      "reason": "cancelled",
+      "detail": {
+        "message": "Pipeline cancelled",
+        "category": "canceled"
+      }
+    },
+    "final_git_commit_sha": "0900adcdd74f46067aacecfe4cf3075e673cc007",
+    "stages": [
+      {
+        "stage_id": "start",
+        "stage_label": "start",
+        "timing": {
+          "wall_time_ms": 0,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "plan",
+        "stage_label": "plan",
+        "timing": {
+          "wall_time_ms": 344,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      }
+    ],
+    "total_retries": 0,
+    "diff": {}
+  },
   "sandbox": {
     "provider": "docker",
     "image": "fabro-v12",
@@ -393,7 +446,28 @@
   },
   "pull_request": null,
   "superseded_by": null,
-  "pending_interviews": {},
+  "pending_interviews": {
+    "01KSKQVAAB8RHZ674QR6W9G71G": {
+      "question": {
+        "id": "01KSKQVAAB8RHZ674QR6W9G71G",
+        "text": "Approve Plan",
+        "stage": "approve",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "key": "A",
+            "label": "[A] Approve"
+          },
+          {
+            "key": "R",
+            "label": "[R] Revise"
+          }
+        ],
+        "allow_freeform": false
+      },
+      "started_at": "2026-05-27T03:32:29.131714545Z"
+    }
+  },
   "stages": {
     "start@1": {
       "first_event_seq": 17,
@@ -429,11 +503,39 @@
       },
       "state": "succeeded"
     },
+    "approve@1": {
+      "first_event_seq": 39,
+      "prompt": null,
+      "response": null,
+      "completion": null,
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T03:32:29.131570295Z",
+      "handler": "human",
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "running"
+    },
     "plan@1": {
       "first_event_seq": 21,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "failed",
+        "notes": null,
+        "failure_reason": "LLM error: Invalid request to litellm: litellm.BadRequestError: OpenAIException - request (7633 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[]. Received Model Group=Qwen3.6-35B-A3B\nAvailable Model Group Fallbacks=None\nError doing the fallback: litellm.BadRequestError: OpenAIException - request (7633 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[] LiteLLM Retried: 1 times",
+        "timestamp": "2026-05-27T03:32:26.545625460Z"
+      },
       "provider_used": {
         "mode": "agent",
         "provider": "litellm",
@@ -446,6 +548,12 @@
       "output": null,
       "started_at": "2026-05-27T03:32:26.201068544Z",
       "handler": "agent",
+      "timing": {
+        "wall_time_ms": 344,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
         "input_tokens": 0,
         "output_tokens": 0,
@@ -583,7 +691,7 @@
           "invoked": false
         }
       ],
-      "state": "running"
+      "state": "failed"
     }
   }
 }
