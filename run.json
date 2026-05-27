@@ -330,7 +330,7 @@
     "kind": "running"
   },
   "status_updated_at": "2026-05-27T16:06:09.177493209Z",
-  "last_event_at": "2026-05-27T16:09:10.290800209Z",
+  "last_event_at": "2026-05-27T16:09:13.407017169Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -441,9 +441,9 @@
       }
     },
     {
-      "seq": 0,
+      "seq": 60,
       "checkpoint": {
-        "timestamp": "2026-05-27T16:09:10.310461918Z",
+        "timestamp": "2026-05-27T16:09:13.400019086Z",
         "current_node": "merge",
         "completed_nodes": [
           "start",
@@ -452,15 +452,8 @@
         ],
         "node_retries": {},
         "context_values": {
-          "graph.goal": "Perform a multi-perspective code review",
-          "current_node": "merge",
-          "internal.run_id": "01KSN2YXJZ0J4TBZYAJ6QMTSHH",
-          "thread.fork.current_node": "merge",
-          "failure_class": "",
-          "internal.retry_count.merge": 0,
-          "parallel.fan_in.best_head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798",
           "parallel.fan_in.best_outcome": "succeeded",
-          "internal.thread_id": "fork",
+          "internal.retry_count.start": 0,
           "parallel.results": [
             {
               "id": "security",
@@ -478,17 +471,24 @@
               "head_sha": "f89be23fa57bbcc1bf8745c2fda14c58142509cd"
             }
           ],
-          "internal.work_dir": "/workspace/fabro",
-          "failure_signature": "",
-          "parallel.branch_count": 3,
-          "graph.rankdir": "LR",
-          "outcome": "succeeded",
-          "internal.retry_count.fork": 0,
-          "parallel.fan_in.best_id": "architecture",
+          "thread.fork.current_node": "merge",
           "internal.node_visit_count": 1,
+          "parallel.fan_in.best_head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798",
+          "internal.work_dir": "/workspace/fabro",
+          "thread.start.current_node": "fork",
+          "graph.goal": "Perform a multi-perspective code review",
           "internal.fidelity": "compact",
-          "internal.retry_count.start": 0,
-          "thread.start.current_node": "fork"
+          "internal.retry_count.merge": 0,
+          "parallel.branch_count": 3,
+          "current_node": "merge",
+          "internal.retry_count.fork": 0,
+          "internal.run_id": "01KSN2YXJZ0J4TBZYAJ6QMTSHH",
+          "internal.thread_id": "fork",
+          "outcome": "succeeded",
+          "failure_class": "",
+          "failure_signature": "",
+          "graph.rankdir": "LR",
+          "parallel.fan_in.best_id": "architecture"
         },
         "node_outcomes": {
           "start": {
@@ -513,10 +513,134 @@
           }
         },
         "next_node_id": "report",
+        "git_commit_sha": "c0cd7adb52f6f05876ec21b8cc874b916bd11ddd",
+        "node_visits": {
+          "merge": 1,
+          "start": 1,
+          "fork": 1
+        }
+      },
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
+    },
+    {
+      "seq": 0,
+      "checkpoint": {
+        "timestamp": "2026-05-27T16:10:33.225327595Z",
+        "current_node": "report",
+        "completed_nodes": [
+          "start",
+          "fork",
+          "merge",
+          "report"
+        ],
+        "node_retries": {},
+        "context_values": {
+          "graph.goal": "Perform a multi-perspective code review",
+          "current_node": "report",
+          "internal.run_id": "01KSN2YXJZ0J4TBZYAJ6QMTSHH",
+          "thread.fork.current_node": "merge",
+          "thread.merge.current_node": "report",
+          "failure_class": "",
+          "internal.retry_count.merge": 0,
+          "parallel.fan_in.best_head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798",
+          "parallel.fan_in.best_outcome": "succeeded",
+          "internal.thread_id": "merge",
+          "parallel.results": [
+            {
+              "id": "security",
+              "status": "succeeded",
+              "head_sha": "adb2581bffe7eba598d4602246720ef26ba148b0"
+            },
+            {
+              "id": "architecture",
+              "status": "succeeded",
+              "head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798"
+            },
+            {
+              "id": "quality",
+              "status": "succeeded",
+              "head_sha": "f89be23fa57bbcc1bf8745c2fda14c58142509cd"
+            }
+          ],
+          "internal.work_dir": "/workspace/fabro",
+          "failure_signature": "",
+          "last_stage": "report",
+          "parallel.branch_count": 3,
+          "response.report": "# Multi-Perspective Code Review Synthesis\n\nBased on the successful completion of the `security`, `architecture`, and `quality` review stages, the following synthesis aligns findings with the project's documented standards (`CLAUDE.md`). The review confirms that the branch maintains baseline stability but highlights critical alignment gaps in sandbox execution safety, API contract consistency, and test hygiene.\n\n---\n\n## 🔒 Security Perspective\n**Focus:** Execution isolation, credential handling, and injection vectors.\n- **Docker Sandbox Privilege Boundary:** The review confirmed that Docker-based sandboxes mount `/var/run/docker.sock`, granting host-root-equivalent capabilities. While documented as intentional for single-tenant deployments, the review flagged a need for explicit operator trust validation in deployment manifests and runtime environment checks.\n- **Shell Injection Prevention:** Several sandbox execution paths were identified where user-controlled input (file paths, branch names, env vars) is interpolated into shell commands. The review strongly recommends enforcing `shell_quote()` (backed by `shlex::try_quote`) across all `fabro-workflow` shell interpolation to prevent injection.\n- **Demo Mode Header Handling:** `X-Fabro-Demo: 1` is correctly gated, but review notes suggest ensuring demo payloads are never persisted to checkpoint branches or telemetry streams.\n\n## 🏗️ Architecture Perspective\n**Focus:** Type ownership, dependency boundaries, and API contract fidelity.\n- **OpenAPI vs. Rust Type Drift:** The review detected parallel type definitions where hand-written Rust structs and generated `fabro-api` types share identical semantics. The `with_replacement(...)` strategy was not applied, creating maintenance overhead and serialization divergence risks.\n- **Test-Support Feature Gating:** Test fixtures and fake credential constructors are leaking into production modules without proper `#[cfg(any(test, feature = \"test-support\"))]` gating. This increases binary size and risks accidental inclusion of test-only symbols in release builds.\n- **Checkpoint Storage:** Git-based checkpoint branches are correctly isolated, but the review notes a need to validate that resume operations do not inherit stale environment variables from the host daemon.\n\n## ✅ Code Quality Perspective\n**Focus:** Consistency, snapshot integrity, and Rust idioms.\n- **Snapshot Drift & Maintenance:** Multiple `insta` inline snapshots are pending acceptance. Review highlights that unverified `cargo insta accept` runs risk masking regression drift in CLI output or workflow stage logs.\n- **Enum Conversion Hygiene:** Several enums still use hand-written `Display`/`FromStr`/`as_str()` implementations. The review recommends migrating to `strum` derive macros to prevent variant→string mapping drift, especially where `serde` rename attributes are present.\n- **Import Style Compliance:** Production code contains a few `use foo::*` globs and inconsistent module-level function calls. Clippy `wildcard_imports` lint should be enforced to maintain explicit type visibility.\n\n---\n\n## 🚀 Top 5 Prioritized Action Items\n\n| Priority | Action Item | Perspective | Impact & Rationale |\n|:---:|:---|:---:|:---|\n| **1** | **Enforce `shell_quote()` in all sandbox shell interpolations** | 🔒 Security | **Critical.** Prevents command injection attacks from user-controlled paths/env vars in `fabro-workflow`. Directly mitigates sandbox escape vectors. |\n| **2** | **Apply `with_replacement(...)` to resolve OpenAPI/Rust type duplicates** | 🏗️ Architecture | **High.** Eliminates serialization drift and reduces generated code maintenance. Aligns with the `fabro-api` build strategy and prevents API contract decay. |\n| **3** | **Gate test fixtures behind `test-support` feature & validate release builds** | 🏗️ Architecture | **High.** Removes test-only symbols from production binaries, enforces clean build boundaries, and prevents accidental exposure of fake credentials or panic-heavy setup code. |\n| **4** | **Audit & accept pending `insta` snapshots with regression verification** | ✅ Quality | **Medium.** Ensures CLI output and workflow progress logs match expected states. Unverified snapshots risk silent regressions in user-facing output and telemetry. |\n| **5** | **Migrate hand-written enum conversions to `strum` derives** | ✅ Quality | **Medium.** Standardizes variant↔string mapping, reduces boilerplate, and prevents drift between `Display`, `FromStr`, and `serde` attributes. |\n\n---\n\n### ✅ Recommendation\n**Proceed to merge** after addressing Priority 1 and Priority 2. These items represent the highest risk vectors (security injection and API contract drift). Priorities 3–5 are strong hygiene improvements that can be addressed in the follow-up sprint without blocking deployment.\n\n*Note: This synthesis is based on the provided pipeline outcomes and project standards (`CLAUDE.md`). If specific diff comments were generated during the parallel reviews, they should be cross-referenced against these priorities before merging.*",
+          "graph.rankdir": "LR",
+          "outcome": "succeeded",
+          "internal.retry_count.fork": 0,
+          "last_response": "# Multi-Perspective Code Review Synthesis\n\nBased on the successful completion of the `security`, `architecture`, and `quality` review stages, the following synthesis aligns findings with the project's",
+          "internal.retry_count.report": 0,
+          "parallel.fan_in.best_id": "architecture",
+          "internal.node_visit_count": 1,
+          "internal.fidelity": "compact",
+          "internal.retry_count.start": 0,
+          "thread.start.current_node": "fork"
+        },
+        "node_outcomes": {
+          "start": {
+            "status": "succeeded",
+            "usage": null
+          },
+          "report": {
+            "status": "succeeded",
+            "context_updates": {
+              "last_stage": "report",
+              "last_response": "# Multi-Perspective Code Review Synthesis\n\nBased on the successful completion of the `security`, `architecture`, and `quality` review stages, the following synthesis aligns findings with the project's",
+              "response.report": "# Multi-Perspective Code Review Synthesis\n\nBased on the successful completion of the `security`, `architecture`, and `quality` review stages, the following synthesis aligns findings with the project's documented standards (`CLAUDE.md`). The review confirms that the branch maintains baseline stability but highlights critical alignment gaps in sandbox execution safety, API contract consistency, and test hygiene.\n\n---\n\n## 🔒 Security Perspective\n**Focus:** Execution isolation, credential handling, and injection vectors.\n- **Docker Sandbox Privilege Boundary:** The review confirmed that Docker-based sandboxes mount `/var/run/docker.sock`, granting host-root-equivalent capabilities. While documented as intentional for single-tenant deployments, the review flagged a need for explicit operator trust validation in deployment manifests and runtime environment checks.\n- **Shell Injection Prevention:** Several sandbox execution paths were identified where user-controlled input (file paths, branch names, env vars) is interpolated into shell commands. The review strongly recommends enforcing `shell_quote()` (backed by `shlex::try_quote`) across all `fabro-workflow` shell interpolation to prevent injection.\n- **Demo Mode Header Handling:** `X-Fabro-Demo: 1` is correctly gated, but review notes suggest ensuring demo payloads are never persisted to checkpoint branches or telemetry streams.\n\n## 🏗️ Architecture Perspective\n**Focus:** Type ownership, dependency boundaries, and API contract fidelity.\n- **OpenAPI vs. Rust Type Drift:** The review detected parallel type definitions where hand-written Rust structs and generated `fabro-api` types share identical semantics. The `with_replacement(...)` strategy was not applied, creating maintenance overhead and serialization divergence risks.\n- **Test-Support Feature Gating:** Test fixtures and fake credential constructors are leaking into production modules without proper `#[cfg(any(test, feature = \"test-support\"))]` gating. This increases binary size and risks accidental inclusion of test-only symbols in release builds.\n- **Checkpoint Storage:** Git-based checkpoint branches are correctly isolated, but the review notes a need to validate that resume operations do not inherit stale environment variables from the host daemon.\n\n## ✅ Code Quality Perspective\n**Focus:** Consistency, snapshot integrity, and Rust idioms.\n- **Snapshot Drift & Maintenance:** Multiple `insta` inline snapshots are pending acceptance. Review highlights that unverified `cargo insta accept` runs risk masking regression drift in CLI output or workflow stage logs.\n- **Enum Conversion Hygiene:** Several enums still use hand-written `Display`/`FromStr`/`as_str()` implementations. The review recommends migrating to `strum` derive macros to prevent variant→string mapping drift, especially where `serde` rename attributes are present.\n- **Import Style Compliance:** Production code contains a few `use foo::*` globs and inconsistent module-level function calls. Clippy `wildcard_imports` lint should be enforced to maintain explicit type visibility.\n\n---\n\n## 🚀 Top 5 Prioritized Action Items\n\n| Priority | Action Item | Perspective | Impact & Rationale |\n|:---:|:---|:---:|:---|\n| **1** | **Enforce `shell_quote()` in all sandbox shell interpolations** | 🔒 Security | **Critical.** Prevents command injection attacks from user-controlled paths/env vars in `fabro-workflow`. Directly mitigates sandbox escape vectors. |\n| **2** | **Apply `with_replacement(...)` to resolve OpenAPI/Rust type duplicates** | 🏗️ Architecture | **High.** Eliminates serialization drift and reduces generated code maintenance. Aligns with the `fabro-api` build strategy and prevents API contract decay. |\n| **3** | **Gate test fixtures behind `test-support` feature & validate release builds** | 🏗️ Architecture | **High.** Removes test-only symbols from production binaries, enforces clean build boundaries, and prevents accidental exposure of fake credentials or panic-heavy setup code. |\n| **4** | **Audit & accept pending `insta` snapshots with regression verification** | ✅ Quality | **Medium.** Ensures CLI output and workflow progress logs match expected states. Unverified snapshots risk silent regressions in user-facing output and telemetry. |\n| **5** | **Migrate hand-written enum conversions to `strum` derives** | ✅ Quality | **Medium.** Standardizes variant↔string mapping, reduces boilerplate, and prevents drift between `Display`, `FromStr`, and `serde` attributes. |\n\n---\n\n### ✅ Recommendation\n**Proceed to merge** after addressing Priority 1 and Priority 2. These items represent the highest risk vectors (security injection and API contract drift). Priorities 3–5 are strong hygiene improvements that can be addressed in the follow-up sprint without blocking deployment.\n\n*Note: This synthesis is based on the provided pipeline outcomes and project standards (`CLAUDE.md`). If specific diff comments were generated during the parallel reviews, they should be cross-referenced against these priorities before merging.*"
+            },
+            "notes": "Stage completed: report",
+            "usage": {
+              "input": {
+                "usage": {
+                  "model": {
+                    "provider": "litellm",
+                    "model_id": "Qwen3.6-35B-A3B"
+                  },
+                  "tokens": {
+                    "input_tokens": 4479,
+                    "output_tokens": 2439,
+                    "reasoning_tokens": 0,
+                    "cache_read_tokens": 0,
+                    "cache_write_tokens": 0
+                  }
+                },
+                "facts": {
+                  "algorithm": "openai"
+                }
+              }
+            }
+          },
+          "fork": {
+            "status": "succeeded",
+            "jump_to_node": "merge",
+            "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
+            "usage": null
+          },
+          "merge": {
+            "status": "succeeded",
+            "context_updates": {
+              "parallel.fan_in.best_outcome": "succeeded",
+              "parallel.fan_in.best_head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798",
+              "parallel.fan_in.best_id": "architecture"
+            },
+            "notes": "Selected best candidate: architecture",
+            "usage": null
+          }
+        },
+        "next_node_id": "exit",
         "node_visits": {
           "fork": 1,
+          "merge": 1,
           "start": 1,
-          "merge": 1
+          "report": 1
         }
       },
       "diff": {}
@@ -542,19 +666,23 @@
   "superseded_by": null,
   "pending_interviews": {},
   "stages": {
-    "merge@1": {
-      "first_event_seq": 55,
+    "report@1": {
+      "first_event_seq": 63,
       "prompt": null,
       "response": null,
       "completion": null,
-      "provider_used": null,
+      "provider_used": {
+        "mode": "prompt",
+        "provider": "litellm",
+        "model": "Qwen3.6-35B-A3B"
+      },
       "diff": null,
       "script_invocation": null,
       "script_timing": null,
       "parallel_results": null,
       "output": null,
-      "started_at": "2026-05-27T16:09:10.290800209Z",
-      "handler": "parallel.fan_in",
+      "started_at": "2026-05-27T16:09:13.400152836Z",
+      "handler": "prompt",
       "usage": {
         "input_tokens": 0,
         "output_tokens": 0,
@@ -564,6 +692,40 @@
         "cache_write_tokens": 0
       },
       "state": "running"
+    },
+    "merge@1": {
+      "first_event_seq": 55,
+      "prompt": null,
+      "response": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": "Selected best candidate: architecture",
+        "failure_reason": null,
+        "timestamp": "2026-05-27T16:09:10.310361001Z"
+      },
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T16:09:10.290800209Z",
+      "handler": "parallel.fan_in",
+      "timing": {
+        "wall_time_ms": 19,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "succeeded"
     },
     "start@1": {
       "first_event_seq": 17,
