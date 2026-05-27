@@ -1,0 +1,21 @@
+diff --git a/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/architecture b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/architecture
+new file mode 160000
+index 0000000..19d1c60
+--- /dev/null
++++ b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/architecture
+@@ -0,0 +1 @@
++Subproject commit 19d1c60189d71faa3ab2e3a600b91c50e3c605bd
+diff --git a/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/quality b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/quality
+new file mode 160000
+index 0000000..19d1c60
+--- /dev/null
++++ b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/quality
+@@ -0,0 +1 @@
++Subproject commit 19d1c60189d71faa3ab2e3a600b91c50e3c605bd
+diff --git a/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/security b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/security
+new file mode 160000
+index 0000000..19d1c60
+--- /dev/null
++++ b/.fabro/scratch/01KSN224Z5PVX1CP1NV2Q7366P/parallel/fork/security
+@@ -0,0 +1 @@
++Subproject commit 19d1c60189d71faa3ab2e3a600b91c50e3c605bd
