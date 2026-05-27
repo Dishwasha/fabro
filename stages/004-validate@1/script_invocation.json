@@ -1,0 +1,5 @@
+{
+  "script": "python3 -m pytest test_fizzbuzz.py -v 2>&1 || true",
+  "command": "exec 2>&1\npython3 -m pytest test_fizzbuzz.py -v 2>&1 || true",
+  "language": "shell"
+}
