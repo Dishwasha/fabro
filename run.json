@@ -330,7 +330,7 @@
     "kind": "running"
   },
   "status_updated_at": "2026-05-27T15:57:55.883357717Z",
-  "last_event_at": "2026-05-27T16:02:04.159677221Z",
+  "last_event_at": "2026-05-27T16:02:07.395021958Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -370,9 +370,9 @@
       "diff": {}
     },
     {
-      "seq": 0,
+      "seq": 52,
       "checkpoint": {
-        "timestamp": "2026-05-27T16:02:04.194280887Z",
+        "timestamp": "2026-05-27T16:02:07.394778333Z",
         "current_node": "fork",
         "completed_nodes": [
           "start",
@@ -380,7 +380,81 @@
         ],
         "node_retries": {},
         "context_values": {
+          "outcome": "succeeded",
+          "current_node": "fork",
+          "failure_signature": "",
+          "internal.node_visit_count": 1,
+          "graph.goal": "Perform a multi-perspective code review",
+          "thread.start.current_node": "fork",
+          "failure_class": "",
+          "parallel.branch_count": 3,
+          "internal.fidelity": "compact",
+          "parallel.results": [
+            {
+              "id": "security",
+              "status": "succeeded",
+              "head_sha": "a803efaf75d8f972e01251ffb861152669b8feb3"
+            },
+            {
+              "id": "architecture",
+              "status": "succeeded",
+              "head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8"
+            },
+            {
+              "id": "quality",
+              "status": "succeeded",
+              "head_sha": "63f8979cdd785dfff02e74bfb86b6b2ded2f97db"
+            }
+          ],
+          "internal.retry_count.start": 0,
+          "internal.run_id": "01KSN2FRHJ1QR8E5M9SPSNCT1C",
+          "internal.work_dir": "/workspace/fabro",
+          "graph.rankdir": "LR",
           "internal.retry_count.fork": 0,
+          "internal.thread_id": "start"
+        },
+        "node_outcomes": {
+          "fork": {
+            "status": "succeeded",
+            "jump_to_node": "merge",
+            "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
+            "usage": null
+          },
+          "start": {
+            "status": "succeeded",
+            "usage": null
+          }
+        },
+        "next_node_id": "merge",
+        "git_commit_sha": "5d7c318ca3191d1ebe62824b85832751e56be706",
+        "node_visits": {
+          "start": 1,
+          "fork": 1
+        }
+      },
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
+    },
+    {
+      "seq": 0,
+      "checkpoint": {
+        "timestamp": "2026-05-27T16:02:07.413465375Z",
+        "current_node": "merge",
+        "completed_nodes": [
+          "start",
+          "fork",
+          "merge"
+        ],
+        "node_retries": {},
+        "context_values": {
+          "internal.retry_count.fork": 0,
+          "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
+          "parallel.fan_in.best_outcome": "succeeded",
           "parallel.branch_count": 3,
           "graph.goal": "Perform a multi-perspective code review",
           "internal.run_id": "01KSN2FRHJ1QR8E5M9SPSNCT1C",
@@ -402,15 +476,18 @@
               "head_sha": "63f8979cdd785dfff02e74bfb86b6b2ded2f97db"
             }
           ],
-          "current_node": "fork",
+          "current_node": "merge",
           "internal.node_visit_count": 1,
           "thread.start.current_node": "fork",
-          "internal.thread_id": "start",
+          "internal.thread_id": "fork",
           "graph.rankdir": "LR",
+          "thread.fork.current_node": "merge",
           "internal.fidelity": "compact",
+          "parallel.fan_in.best_id": "architecture",
           "failure_class": "",
           "outcome": "succeeded",
           "internal.work_dir": "/workspace/fabro",
+          "internal.retry_count.merge": 0,
           "failure_signature": ""
         },
         "node_outcomes": {
@@ -423,12 +500,23 @@
             "jump_to_node": "merge",
             "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
             "usage": null
+          },
+          "merge": {
+            "status": "succeeded",
+            "context_updates": {
+              "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
+              "parallel.fan_in.best_id": "architecture",
+              "parallel.fan_in.best_outcome": "succeeded"
+            },
+            "notes": "Selected best candidate: architecture",
+            "usage": null
           }
         },
-        "next_node_id": "merge",
+        "next_node_id": "report",
         "node_visits": {
           "start": 1,
-          "fork": 1
+          "fork": 1,
+          "merge": 1
         }
       },
       "diff": {}
@@ -458,7 +546,12 @@
       "first_event_seq": 21,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
+        "failure_reason": null,
+        "timestamp": "2026-05-27T16:02:04.194226137Z"
+      },
       "provider_used": {
         "mode": "prompt",
         "provider": "litellm",
@@ -467,10 +560,32 @@
       "diff": null,
       "script_invocation": null,
       "script_timing": null,
-      "parallel_results": null,
+      "parallel_results": [
+        {
+          "id": "security",
+          "status": "succeeded",
+          "head_sha": "a803efaf75d8f972e01251ffb861152669b8feb3"
+        },
+        {
+          "id": "architecture",
+          "status": "succeeded",
+          "head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8"
+        },
+        {
+          "id": "quality",
+          "status": "succeeded",
+          "head_sha": "63f8979cdd785dfff02e74bfb86b6b2ded2f97db"
+        }
+      ],
       "output": null,
       "started_at": "2026-05-27T15:57:57.484702384Z",
       "handler": "parallel",
+      "timing": {
+        "wall_time_ms": 246707,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
         "input_tokens": 4245,
         "output_tokens": 3856,
@@ -483,7 +598,7 @@
         "provider": "litellm",
         "model_id": "Qwen3.6-35B-A3B"
       },
-      "state": "running"
+      "state": "succeeded"
     },
     "start@1": {
       "first_event_seq": 17,
@@ -518,6 +633,29 @@
         "cache_write_tokens": 0
       },
       "state": "succeeded"
+    },
+    "merge@1": {
+      "first_event_seq": 55,
+      "prompt": null,
+      "response": null,
+      "completion": null,
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T16:02:07.395021958Z",
+      "handler": "parallel.fan_in",
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "running"
     }
   }
 }

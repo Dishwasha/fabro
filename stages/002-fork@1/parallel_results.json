@@ -1,0 +1,17 @@
+[
+  {
+    "id": "security",
+    "status": "succeeded",
+    "head_sha": "a803efaf75d8f972e01251ffb861152669b8feb3"
+  },
+  {
+    "id": "architecture",
+    "status": "succeeded",
+    "head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8"
+  },
+  {
+    "id": "quality",
+    "status": "succeeded",
+    "head_sha": "63f8979cdd785dfff02e74bfb86b6b2ded2f97db"
+  }
+]
