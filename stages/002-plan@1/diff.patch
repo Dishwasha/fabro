@@ -1,0 +1,313 @@
+diff --git a/plan.md b/plan.md
+new file mode 100644
+index 0000000..dae1e7f
+--- /dev/null
++++ b/plan.md
+@@ -0,0 +1,36 @@
++# Plan: Temperature Conversion Module (tempconv.py)
++
++## Goal
++Create a Python module (`tempconv.py`) that converts between Celsius, Fahrenheit, and Kelvin, with corresponding `pytest` tests.
++
++## Functions
++
++| # | Function | Signature | Description |
++|---|---|---|---|
++| 1 | `celsius_to_fahrenheit` | `(celsius: float) -> float` | °C → °F |
++| 2 | `celsius_to_kelvin` | `(celsius: float) -> float` | °C → K |
++| 3 | `fahrenheit_to_celsius` | `(fahrenheit: float) -> float` | °F → °C |
++| 4 | `fahrenheit_to_kelvin` | `(fahrenheit: float) -> float` | °F → K |
++| 5 | `kelvin_to_celsius` | `(kelvin: float) -> float` | K → °C |
++| 6 | `kelvin_to_fahrenheit` | `(kelvin: float) -> float` | K → °F |
++
++## Edge Cases
++
++1. **Absolute zero** — 0 K = -273.15 °C = -459.67 °F; conversions must produce exact equivalents.
++2. **Negative Kelvin** — physically impossible; raise `ValueError`.
++3. **Zero values** — 0 °C (water freezes), 0 °F, 0 K (absolute zero).
++4. **Large values** — extreme temperatures (e.g., 10 000 °C).
++5. **Floating-point precision** — round-trip conversions (e.g., °C → °F → °C) must stay within tolerance.
++6. **Type safety** — non-numeric inputs (`str`, `None`, etc.) should raise `TypeError`.
++
++## Implementation Steps
++
++1. **Create `tempconv.py`** with all six conversion functions, docstrings, and type hints. Add input validation (negative Kelvin → `ValueError`, non-numeric → `TypeError`).
++2. **Create `test_tempconv.py`** with pytest tests covering:
++   - Known-value conversions (e.g., 0 °C = 32 °F, 100 °C = 212 °F, 0 °C = 273.15 K).
++   - Round-trip precision (each value converted away and back, asserted within `pytest.approx`).
++   - Absolute zero conversions in both directions.
++   - Negative Kelvin raising `ValueError`.
++   - Non-numeric inputs raising `TypeError`.
++   - Large values.
++3. **Run pytest** to verify all tests pass.
+diff --git a/tempconv.py b/tempconv.py
+new file mode 100644
+index 0000000..e40a2c8
+--- /dev/null
++++ b/tempconv.py
+@@ -0,0 +1,77 @@
++"""Temperature conversion utilities between Celsius, Fahrenheit, and Kelvin."""
++
++from __future__ import annotations
++
++
++def _validate_number(value: float, name: str) -> None:
++    """Raise TypeError if *value* is not a number, and ValueError if it is NaN/Inf."""
++    if isinstance(value, bool):
++        raise TypeError(f"{name} must be a number, got bool")
++    if not isinstance(value, (int, float)):
++        raise TypeError(f"{name} must be a number, got {type(value).__name__}")
++    if value != value:  # NaN check
++        raise ValueError(f"{name} must not be NaN")
++    if value == float("inf") or value == float("-inf"):
++        raise ValueError(f"{name} must not be infinite")
++
++
++def celsius_to_fahrenheit(celsius: float) -> float:
++    """Convert Celsius to Fahrenheit.
++
++    Formula:  °F = °C × 9/5 + 32
++    """
++    _validate_number(celsius, "celsius")
++    return celsius * 9 / 5 + 32
++
++
++def celsius_to_kelvin(celsius: float) -> float:
++    """Convert Celsius to Kelvin.
++
++    Formula:  K = °C + 273.15
++    """
++    _validate_number(celsius, "celsius")
++    return celsius + 273.15
++
++
++def fahrenheit_to_celsius(fahrenheit: float) -> float:
++    """Convert Fahrenheit to Celsius.
++
++    Formula:  °C = (°F − 32) × 5/9
++    """
++    _validate_number(fahrenheit, "fahrenheit")
++    return (fahrenheit - 32) * 5 / 9
++
++
++def fahrenheit_to_kelvin(fahrenheit: float) -> float:
++    """Convert Fahrenheit to Kelvin.
++
++    Formula:  K = (°F − 32) × 5/9 + 273.15
++    """
++    _validate_number(fahrenheit, "fahrenheit")
++    return (fahrenheit - 32) * 5 / 9 + 273.15
++
++
++def kelvin_to_celsius(kelvin: float) -> float:
++    """Convert Kelvin to Celsius.
++
++    Raises ValueError if *kelvin* is below absolute zero.
++
++    Formula:  °C = K − 273.15
++    """
++    _validate_number(kelvin, "kelvin")
++    if kelvin < 0:
++        raise ValueError(f"Temperature in kelvin must be >= 0, got {kelvin}")
++    return kelvin - 273.15
++
++
++def kelvin_to_fahrenheit(kelvin: float) -> float:
++    """Convert Kelvin to Fahrenheit.
++
++    Raises ValueError if *kelvin* is below absolute zero.
++
++    Formula:  °F = (K − 273.15) × 9/5 + 32
++    """
++    _validate_number(kelvin, "kelvin")
++    if kelvin < 0:
++        raise ValueError(f"Temperature in kelvin must be >= 0, got {kelvin}")
++    return (kelvin - 273.15) * 9 / 5 + 32
+diff --git a/test_tempconv.py b/test_tempconv.py
+new file mode 100644
+index 0000000..0ddfd03
+--- /dev/null
++++ b/test_tempconv.py
+@@ -0,0 +1,182 @@
++"""Tests for tempconv module."""
++
++import pytest
++
++import tempconv
++
++# ── Known-value conversions ──────────────────────────────────────────────────
++
++class TestKnownValues:
++    """Conversions against hand-checked reference values."""
++
++    def test_0c_to_fahrenheit(self):
++        assert tempconv.celsius_to_fahrenheit(0) == pytest.approx(32)
++
++    def test_100c_to_fahrenheit(self):
++        assert tempconv.celsius_to_fahrenheit(100) == pytest.approx(212)
++
++    def test_freezing_to_kelvin(self):
++        assert tempconv.celsius_to_kelvin(0) == pytest.approx(273.15)
++
++    def test_boiling_to_kelvin(self):
++        assert tempconv.celsius_to_kelvin(100) == pytest.approx(373.15)
++
++    def test_32f_to_celsius(self):
++        assert tempconv.fahrenheit_to_celsius(32) == pytest.approx(0)
++
++    def test_212f_to_celsius(self):
++        assert tempconv.fahrenheit_to_celsius(212) == pytest.approx(100)
++
++    def test_273_15k_to_celsius(self):
++        assert tempconv.kelvin_to_celsius(273.15) == pytest.approx(0)
++
++    def test_373_15k_to_celsius(self):
++        assert tempconv.kelvin_to_celsius(373.15) == pytest.approx(100)
++
++    def test_32f_to_kelvin(self):
++        assert tempconv.fahrenheit_to_kelvin(32) == pytest.approx(273.15)
++
++    def test_212f_to_kelvin(self):
++        assert tempconv.fahrenheit_to_kelvin(212) == pytest.approx(373.15)
++
++    def test_273_15k_to_fahrenheit(self):
++        assert tempconv.kelvin_to_fahrenheit(273.15) == pytest.approx(32)
++
++    def test_373_15k_to_fahrenheit(self):
++        assert tempconv.kelvin_to_fahrenheit(373.15) == pytest.approx(212)
++
++    def test_body_temperature(self):
++        assert tempconv.celsius_to_fahrenheit(37) == pytest.approx(98.6)
++
++    def test_celsius_to_kelvin_and_back(self):
++        assert tempconv.kelvin_to_celsius(273.15) == pytest.approx(0)
++
++
++# ── Absolute zero ────────────────────────────────────────────────────────────
++
++class TestAbsoluteZero:
++    """Conversions involving absolute zero (0 K = -273.15 °C = -459.67 °F)."""
++
++    def test_k_to_c(self):
++        assert tempconv.kelvin_to_celsius(0) == pytest.approx(-273.15)
++
++    def test_c_to_k(self):
++        assert tempconv.celsius_to_kelvin(-273.15) == pytest.approx(0)
++
++    def test_c_to_f(self):
++        assert tempconv.celsius_to_fahrenheit(-273.15) == pytest.approx(-459.67)
++
++    def test_f_to_c(self):
++        assert tempconv.fahrenheit_to_celsius(-459.67) == pytest.approx(-273.15)
++
++    def test_f_to_k(self):
++        assert tempconv.fahrenheit_to_kelvin(-459.67) == pytest.approx(0)
++
++    def test_k_to_f(self):
++        assert tempconv.kelvin_to_fahrenheit(0) == pytest.approx(-459.67)
++
++
++# ── Round-trip precision ─────────────────────────────────────────────────────
++
++class TestRoundTrip:
++    """Each value converted away and back should land within tolerance."""
++
++    @pytest.mark.parametrize(
++        "value",
++        [0, 20, 37, 100, -40, -273.15, 1000, 0.001],
++    )
++    def test_celsius_round_trip(self, value):
++        f = tempconv.celsius_to_fahrenheit(value)
++        assert tempconv.fahrenheit_to_celsius(f) == pytest.approx(value)
++
++        k = tempconv.celsius_to_kelvin(value)
++        assert tempconv.kelvin_to_celsius(k) == pytest.approx(value)
++
++    @pytest.mark.parametrize(
++        "value",
++        [0, 32, 212, -40, 1000, 0.001],
++    )
++    def test_fahrenheit_round_trip(self, value):
++        c = tempconv.fahrenheit_to_celsius(value)
++        assert tempconv.celsius_to_fahrenheit(c) == pytest.approx(value)
++
++        k = tempconv.fahrenheit_to_kelvin(value)
++        assert tempconv.kelvin_to_fahrenheit(k) == pytest.approx(value)
++
++    @pytest.mark.parametrize(
++        "value",
++        [0, 273.15, 373.15, 1000, 0.001],
++    )
++    def test_kelvin_round_trip(self, value):
++        c = tempconv.kelvin_to_celsius(value)
++        assert tempconv.celsius_to_kelvin(c) == pytest.approx(value)
++
++        f = tempconv.kelvin_to_fahrenheit(value)
++        assert tempconv.fahrenheit_to_kelvin(f) == pytest.approx(value)
++
++
++# ── Negative Kelvin (ValueError) ─────────────────────────────────────────────
++
++class TestNegativeKelvin:
++    """Kelvin cannot be negative."""
++
++    @pytest.mark.parametrize(
++        "func",
++        [tempconv.kelvin_to_celsius, tempconv.kelvin_to_fahrenheit],
++    )
++    def test_negative_raises(self, func):
++        with pytest.raises(ValueError, match="kelvin must be >= 0"):
++            func(-1)
++
++    def test_zero_kelvin_is_valid(self):
++        assert tempconv.kelvin_to_celsius(0) == pytest.approx(-273.15)
++        assert tempconv.kelvin_to_fahrenheit(0) == pytest.approx(-459.67)
++
++
++# ── Type safety ───────────────────────────────────────────────────────────────
++
++class TestTypeSafety:
++    """Non-numeric inputs should raise TypeError."""
++
++    @pytest.mark.parametrize(
++        "func",
++        [
++            tempconv.celsius_to_fahrenheit,
++            tempconv.celsius_to_kelvin,
++            tempconv.fahrenheit_to_celsius,
++            tempconv.fahrenheit_to_kelvin,
++            tempconv.kelvin_to_celsius,
++            tempconv.kelvin_to_fahrenheit,
++        ],
++    )
++    @pytest.mark.parametrize("bad_input", ["not a number", None, True, [25], {"c": 25}])
++    def test_non_numeric_raises(self, func, bad_input):
++        with pytest.raises(TypeError):
++            func(bad_input)
++
++    def test_nan_raises(self):
++        with pytest.raises(ValueError):
++            tempconv.celsius_to_fahrenheit(float("nan"))
++
++    def test_inf_raises(self):
++        with pytest.raises(ValueError):
++            tempconv.kelvin_to_celsius(float("inf"))
++
++
++# ── Large values ──────────────────────────────────────────────────────────────
++
++class TestLargeValues:
++    """Extreme temperature values."""
++
++    def test_stellar_core(self):
++        # ~15 million °C (Sun's core)
++        c = 15_000_000
++        f = tempconv.celsius_to_fahrenheit(c)
++        k = tempconv.celsius_to_kelvin(c)
++        assert f == pytest.approx(27_000_032)
++        assert k == pytest.approx(15_000_273.15)
++
++    def test_solar_surface(self):
++        # ~5500 °C
++        assert tempconv.celsius_to_fahrenheit(5500) == pytest.approx(9932)
++        assert tempconv.celsius_to_kelvin(5500) == pytest.approx(5773.15)
