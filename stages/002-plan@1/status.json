@@ -1,0 +1,6 @@
+{
+  "outcome": "failed",
+  "notes": null,
+  "failure_reason": "LLM error: Configuration error: model 'Qwen3.6-35B-A3B' does not support reasoning_effort 'high'; allowed values: none",
+  "timestamp": "2026-05-27T02:55:34.111567589Z"
+}
