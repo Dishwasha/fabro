@@ -1,0 +1,5 @@
+{
+  "mode": "agent",
+  "provider": "proxy",
+  "model": "Qwen3.6-35B-A3B"
+}
