@@ -285,8 +285,8 @@
   "status": {
     "kind": "running"
   },
-  "status_updated_at": "2026-05-27T03:43:55.084022293Z",
-  "last_event_at": "2026-05-27T03:43:56.271038044Z",
+  "status_updated_at": "2026-05-27T03:45:47.044995553Z",
+  "last_event_at": "2026-05-27T03:45:47.044995553Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -326,9 +326,9 @@
       "diff": {}
     },
     {
-      "seq": 0,
+      "seq": 36,
       "checkpoint": {
-        "timestamp": "2026-05-27T03:43:56.544004585Z",
+        "timestamp": "2026-05-27T03:43:58.937796211Z",
         "current_node": "plan",
         "completed_nodes": [
           "start",
@@ -336,20 +336,20 @@
         ],
         "node_retries": {},
         "context_values": {
-          "outcome": "failed",
-          "internal.thread_id": "start",
-          "failure_class": "deterministic",
-          "failure_signature": "plan|deterministic|api_deterministic|litellm|invalid_request",
           "internal.run_id": "01KSKRG5X5Z8Q9K4P0GPCF27D7",
-          "graph.rankdir": "LR",
-          "internal.work_dir": "/workspace/fabro",
           "current_node": "plan",
-          "internal.node_visit_count": 1,
-          "internal.retry_count.plan": 0,
+          "failure_signature": "plan|deterministic|api_deterministic|litellm|invalid_request",
+          "internal.thread_id": "start",
+          "graph.rankdir": "LR",
+          "outcome": "failed",
+          "failure_class": "deterministic",
           "graph.goal": "Plan, approve, implement, and simplify a change",
-          "internal.retry_count.start": 0,
+          "internal.work_dir": "/workspace/fabro",
+          "internal.retry_count.plan": 0,
           "thread.start.current_node": "plan",
-          "internal.fidelity": "compact"
+          "internal.fidelity": "compact",
+          "internal.retry_count.start": 0,
+          "internal.node_visit_count": 1
         },
         "node_outcomes": {
           "start": {
@@ -367,15 +367,68 @@
           }
         },
         "next_node_id": "approve",
+        "git_commit_sha": "23916a9e0c35692f9a0080530bce3e15d577647f",
+        "loop_failure_signatures": {
+          "plan|deterministic|api_deterministic|litellm|invalid_request": 1
+        },
         "node_visits": {
           "plan": 1,
           "start": 1
         }
       },
-      "diff": {}
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
     }
   ],
-  "conclusion": null,
+  "conclusion": {
+    "timestamp": "2026-05-27T03:45:47.049588595Z",
+    "status": "failed",
+    "timing": {
+      "wall_time_ms": 111990,
+      "inference_time_ms": 0,
+      "tool_time_ms": 0,
+      "active_time_ms": 0
+    },
+    "failure": {
+      "reason": "cancelled",
+      "detail": {
+        "message": "Pipeline cancelled",
+        "category": "canceled"
+      }
+    },
+    "final_git_commit_sha": "23916a9e0c35692f9a0080530bce3e15d577647f",
+    "stages": [
+      {
+        "stage_id": "start",
+        "stage_label": "start",
+        "timing": {
+          "wall_time_ms": 0,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "plan",
+        "stage_label": "plan",
+        "timing": {
+          "wall_time_ms": 427,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      }
+    ],
+    "total_retries": 0,
+    "diff": {}
+  },
   "sandbox": {
     "provider": "docker",
     "image": "fabro-v12",
@@ -393,13 +446,39 @@
   },
   "pull_request": null,
   "superseded_by": null,
-  "pending_interviews": {},
+  "pending_interviews": {
+    "01KSKRGBYTS0P9PNV9PMVA6AH2": {
+      "question": {
+        "id": "01KSKRGBYTS0P9PNV9PMVA6AH2",
+        "text": "Approve Plan",
+        "stage": "approve",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "key": "A",
+            "label": "[A] Approve"
+          },
+          {
+            "key": "R",
+            "label": "[R] Revise"
+          }
+        ],
+        "allow_freeform": false
+      },
+      "started_at": "2026-05-27T03:43:58.938261545Z"
+    }
+  },
   "stages": {
     "plan@1": {
       "first_event_seq": 21,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "failed",
+        "notes": null,
+        "failure_reason": "LLM error: Invalid request to litellm: litellm.BadRequestError: OpenAIException - request (7636 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[]. Received Model Group=Qwen3.6-35B-A3B\nAvailable Model Group Fallbacks=None\nError doing the fallback: litellm.BadRequestError: OpenAIException - request (7636 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[] LiteLLM Retried: 1 times",
+        "timestamp": "2026-05-27T03:43:56.543958127Z"
+      },
       "provider_used": {
         "mode": "agent",
         "provider": "litellm",
@@ -412,6 +491,12 @@
       "output": null,
       "started_at": "2026-05-27T03:43:56.116079960Z",
       "handler": "agent",
+      "timing": {
+        "wall_time_ms": 427,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
         "input_tokens": 0,
         "output_tokens": 0,
@@ -549,7 +634,7 @@
           "invoked": false
         }
       ],
-      "state": "running"
+      "state": "failed"
     },
     "start@1": {
       "first_event_seq": 17,
@@ -584,6 +669,29 @@
         "cache_write_tokens": 0
       },
       "state": "succeeded"
+    },
+    "approve@1": {
+      "first_event_seq": 39,
+      "prompt": null,
+      "response": null,
+      "completion": null,
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T03:43:58.938145420Z",
+      "handler": "human",
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "running"
     }
   }
 }
