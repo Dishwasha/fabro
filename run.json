@@ -321,14 +321,119 @@
     }
   },
   "web_url": "http://localhost:32276/runs/01KSN2YXJZ0J4TBZYAJ6QMTSHH",
-  "start": null,
-  "status": {
-    "kind": "starting"
+  "start": {
+    "start_time": "2026-05-27T16:06:09.177478125Z",
+    "run_branch": "fabro/run/01KSN2YXJZ0J4TBZYAJ6QMTSHH",
+    "base_sha": "8102c1191922ff4ed104924eb030ce51f965d760"
   },
-  "status_updated_at": "2026-05-27T16:05:55.984695592Z",
-  "last_event_at": "2026-05-27T16:06:08.938895584Z",
+  "status": {
+    "kind": "running"
+  },
+  "status_updated_at": "2026-05-27T16:06:09.177493209Z",
+  "last_event_at": "2026-05-27T16:09:07.053490597Z",
   "pending_control": null,
-  "checkpoints": [],
+  "checkpoints": [
+    {
+      "seq": 20,
+      "checkpoint": {
+        "timestamp": "2026-05-27T16:06:10.859887918Z",
+        "current_node": "start",
+        "completed_nodes": [
+          "start"
+        ],
+        "node_retries": {},
+        "context_values": {
+          "graph.goal": "Perform a multi-perspective code review",
+          "internal.thread_id": null,
+          "internal.retry_count.start": 0,
+          "outcome": "succeeded",
+          "internal.fidelity": "compact",
+          "internal.work_dir": "/workspace/fabro",
+          "internal.run_id": "01KSN2YXJZ0J4TBZYAJ6QMTSHH",
+          "current_node": "start",
+          "internal.node_visit_count": 1,
+          "failure_signature": "",
+          "failure_class": "",
+          "graph.rankdir": "LR"
+        },
+        "node_outcomes": {
+          "start": {
+            "status": "succeeded",
+            "usage": null
+          }
+        },
+        "next_node_id": "fork",
+        "node_visits": {
+          "start": 1
+        }
+      },
+      "diff": {}
+    },
+    {
+      "seq": 0,
+      "checkpoint": {
+        "timestamp": "2026-05-27T16:09:07.084553764Z",
+        "current_node": "fork",
+        "completed_nodes": [
+          "start",
+          "fork"
+        ],
+        "node_retries": {},
+        "context_values": {
+          "graph.goal": "Perform a multi-perspective code review",
+          "current_node": "fork",
+          "internal.run_id": "01KSN2YXJZ0J4TBZYAJ6QMTSHH",
+          "failure_class": "",
+          "internal.thread_id": "start",
+          "parallel.results": [
+            {
+              "id": "security",
+              "status": "succeeded",
+              "head_sha": "adb2581bffe7eba598d4602246720ef26ba148b0"
+            },
+            {
+              "id": "architecture",
+              "status": "succeeded",
+              "head_sha": "4ba309ee8caac75d6257990cdd2cb9bb855ff798"
+            },
+            {
+              "id": "quality",
+              "status": "succeeded",
+              "head_sha": "f89be23fa57bbcc1bf8745c2fda14c58142509cd"
+            }
+          ],
+          "internal.work_dir": "/workspace/fabro",
+          "failure_signature": "",
+          "parallel.branch_count": 3,
+          "graph.rankdir": "LR",
+          "outcome": "succeeded",
+          "internal.retry_count.fork": 0,
+          "internal.node_visit_count": 1,
+          "internal.fidelity": "compact",
+          "internal.retry_count.start": 0,
+          "thread.start.current_node": "fork"
+        },
+        "node_outcomes": {
+          "fork": {
+            "status": "succeeded",
+            "jump_to_node": "merge",
+            "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
+            "usage": null
+          },
+          "start": {
+            "status": "succeeded",
+            "usage": null
+          }
+        },
+        "next_node_id": "merge",
+        "node_visits": {
+          "fork": 1,
+          "start": 1
+        }
+      },
+      "diff": {}
+    }
+  ],
   "conclusion": null,
   "sandbox": {
     "provider": "docker",
@@ -348,5 +453,71 @@
   "pull_request": null,
   "superseded_by": null,
   "pending_interviews": {},
-  "stages": {}
+  "stages": {
+    "start@1": {
+      "first_event_seq": 17,
+      "prompt": null,
+      "response": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": null,
+        "failure_reason": null,
+        "timestamp": "2026-05-27T16:06:10.859734501Z"
+      },
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T16:06:10.859655043Z",
+      "handler": "start",
+      "timing": {
+        "wall_time_ms": 0,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "succeeded"
+    },
+    "fork@1": {
+      "first_event_seq": 21,
+      "prompt": null,
+      "response": null,
+      "completion": null,
+      "provider_used": {
+        "mode": "prompt",
+        "provider": "litellm",
+        "model": "Qwen3.6-35B-A3B"
+      },
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T16:06:10.859997960Z",
+      "handler": "parallel",
+      "usage": {
+        "input_tokens": 4244,
+        "output_tokens": 2771,
+        "total_tokens": 7015,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "model": {
+        "provider": "litellm",
+        "model_id": "Qwen3.6-35B-A3B"
+      },
+      "state": "running"
+    }
+  }
 }
