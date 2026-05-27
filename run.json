@@ -285,8 +285,8 @@
   "status": {
     "kind": "running"
   },
-  "status_updated_at": "2026-05-27T03:01:09.267736050Z",
-  "last_event_at": "2026-05-27T03:01:10.660821634Z",
+  "status_updated_at": "2026-05-27T03:02:12.399634843Z",
+  "last_event_at": "2026-05-27T03:02:12.399634843Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -326,9 +326,9 @@
       "diff": {}
     },
     {
-      "seq": 0,
+      "seq": 36,
       "checkpoint": {
-        "timestamp": "2026-05-27T03:01:10.808212342Z",
+        "timestamp": "2026-05-27T03:01:13.477510260Z",
         "current_node": "plan",
         "completed_nodes": [
           "start",
@@ -336,22 +336,26 @@
         ],
         "node_retries": {},
         "context_values": {
-          "internal.node_visit_count": 1,
-          "graph.goal": "Plan, approve, implement, and simplify a change",
-          "graph.rankdir": "LR",
-          "internal.retry_count.start": 0,
-          "internal.run_id": "01KSKP1WCEMKNWW2FQGXGVEP6F",
-          "internal.fidelity": "compact",
           "internal.thread_id": "start",
+          "outcome": "failed",
+          "internal.retry_count.start": 0,
+          "internal.fidelity": "compact",
+          "graph.rankdir": "LR",
           "failure_signature": "plan|deterministic|api_deterministic|litellm|invalid_request",
-          "thread.start.current_node": "plan",
+          "internal.node_visit_count": 1,
+          "internal.run_id": "01KSKP1WCEMKNWW2FQGXGVEP6F",
           "internal.work_dir": "/workspace/fabro",
           "current_node": "plan",
-          "internal.retry_count.plan": 0,
           "failure_class": "deterministic",
-          "outcome": "failed"
+          "graph.goal": "Plan, approve, implement, and simplify a change",
+          "internal.retry_count.plan": 0,
+          "thread.start.current_node": "plan"
         },
         "node_outcomes": {
+          "start": {
+            "status": "succeeded",
+            "usage": null
+          },
           "plan": {
             "status": "failed",
             "failure": {
@@ -360,22 +364,71 @@
               "signature": "api_deterministic|litellm|invalid_request"
             },
             "usage": null
-          },
-          "start": {
-            "status": "succeeded",
-            "usage": null
           }
         },
         "next_node_id": "approve",
+        "git_commit_sha": "009b2ed62ce39ad955119f54abaf3b10f72ba4a8",
+        "loop_failure_signatures": {
+          "plan|deterministic|api_deterministic|litellm|invalid_request": 1
+        },
         "node_visits": {
           "plan": 1,
           "start": 1
         }
       },
-      "diff": {}
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
     }
   ],
-  "conclusion": null,
+  "conclusion": {
+    "timestamp": "2026-05-27T03:02:12.402569551Z",
+    "status": "failed",
+    "timing": {
+      "wall_time_ms": 63134,
+      "inference_time_ms": 0,
+      "tool_time_ms": 0,
+      "active_time_ms": 0
+    },
+    "failure": {
+      "reason": "cancelled",
+      "detail": {
+        "message": "Pipeline cancelled",
+        "category": "canceled"
+      }
+    },
+    "final_git_commit_sha": "009b2ed62ce39ad955119f54abaf3b10f72ba4a8",
+    "stages": [
+      {
+        "stage_id": "start",
+        "stage_label": "start",
+        "timing": {
+          "wall_time_ms": 0,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "plan",
+        "stage_label": "plan",
+        "timing": {
+          "wall_time_ms": 355,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      }
+    ],
+    "total_retries": 0,
+    "diff": {}
+  },
   "sandbox": {
     "provider": "docker",
     "image": "fabro-v12",
@@ -393,7 +446,28 @@
   },
   "pull_request": null,
   "superseded_by": null,
-  "pending_interviews": {},
+  "pending_interviews": {
+    "01KSKP22M5QHWEABQTH837JB8S": {
+      "question": {
+        "id": "01KSKP22M5QHWEABQTH837JB8S",
+        "text": "Approve Plan",
+        "stage": "approve",
+        "question_type": "multiple_choice",
+        "options": [
+          {
+            "key": "A",
+            "label": "[A] Approve"
+          },
+          {
+            "key": "R",
+            "label": "[R] Revise"
+          }
+        ],
+        "allow_freeform": false
+      },
+      "started_at": "2026-05-27T03:01:13.477858260Z"
+    }
+  },
   "stages": {
     "start@1": {
       "first_event_seq": 17,
@@ -433,7 +507,12 @@
       "first_event_seq": 21,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "failed",
+        "notes": null,
+        "failure_reason": "LLM error: Invalid request to litellm: litellm.BadRequestError: OpenAIException - request (7634 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[]. Received Model Group=Qwen3.6-35B-A3B\nAvailable Model Group Fallbacks=None\nError doing the fallback: litellm.BadRequestError: OpenAIException - request (7634 tokens) exceeds the available context size (4096 tokens), try increasing itNo fallback model group found for original model_group=Qwen3.6-35B-A3B. Fallbacks=[] LiteLLM Retried: 1 times",
+        "timestamp": "2026-05-27T03:01:10.808177176Z"
+      },
       "provider_used": {
         "mode": "agent",
         "provider": "litellm",
@@ -446,6 +525,12 @@
       "output": null,
       "started_at": "2026-05-27T03:01:10.452643676Z",
       "handler": "agent",
+      "timing": {
+        "wall_time_ms": 355,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
         "input_tokens": 0,
         "output_tokens": 0,
@@ -583,6 +668,29 @@
           "invoked": false
         }
       ],
+      "state": "failed"
+    },
+    "approve@1": {
+      "first_event_seq": 39,
+      "prompt": null,
+      "response": null,
+      "completion": null,
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T03:01:13.477723552Z",
+      "handler": "human",
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
       "state": "running"
     }
   }
