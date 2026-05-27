@@ -330,7 +330,7 @@
     "kind": "running"
   },
   "status_updated_at": "2026-05-27T15:50:25.626774800Z",
-  "last_event_at": "2026-05-27T15:53:04.765982763Z",
+  "last_event_at": "2026-05-27T15:55:48.961346213Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -440,21 +440,22 @@
     {
       "seq": 0,
       "checkpoint": {
-        "timestamp": "2026-05-27T15:55:47.342650129Z",
-        "current_node": "architecture",
+        "timestamp": "2026-05-27T15:55:50.792989631Z",
+        "current_node": "merge",
         "completed_nodes": [
           "start",
           "fork",
-          "architecture"
+          "architecture",
+          "merge"
         ],
         "node_retries": {},
         "context_values": {
-          "outcome": "succeeded",
+          "outcome": "failed",
           "internal.run_id": "01KSN224Z5PVX1CP1NV2Q7366P",
           "thread.start.current_node": "fork",
           "internal.node_visit_count": 1,
           "graph.rankdir": "LR",
-          "failure_signature": "",
+          "failure_signature": "merge|deterministic|all candidates failed",
           "parallel.results": [
             {
               "id": "",
@@ -469,16 +470,18 @@
               "status": "failed"
             }
           ],
-          "failure_class": "",
+          "failure_class": "deterministic",
           "last_response": "Based on the provided CLAUDE.md and workspace layout, here is an architectural assessment focused on separation of concerns, dependency structure, and modularity:\n\n### Separation of Concerns\n- **Layer",
           "internal.work_dir": "/workspace/fabro",
+          "thread.architecture.current_node": "merge",
+          "internal.retry_count.merge": 0,
           "internal.retry_count.fork": 0,
-          "internal.thread_id": "fork",
+          "internal.thread_id": "architecture",
           "last_stage": "architecture",
           "response.architecture": "Based on the provided CLAUDE.md and workspace layout, here is an architectural assessment focused on separation of concerns, dependency structure, and modularity:\n\n### Separation of Concerns\n- **Layered boundaries are explicit**: User-facing entry points (`fabro-cli`, `fabro-server`, `fabro-web`) are decoupled from core orchestration logic (`fabro-workflow`, `fabro-agent`, `fabro-checkpoint`), preventing UI/command concerns from leaking into the engine.\n- **Contract-driven API boundary**: The OpenAPI spec is the single source of truth; `fabro-api` uses `build.rs` + `progenitor` to auto-generate types, while `with_replacement(...)` explicitly prevents accidental duplication between wire DTOs and internal domain types.\n- **Cross-cutting concerns are governed by policy**: Dedicated strategy docs (`logging-strategy.md`, `error-handling-strategy.md`, `server-secrets-strategy.md`, `migrations-strategy.md`) enforce consistent implementation patterns without scattering concerns into business crates.\n- **Test infrastructure is strictly gated**: Test-only fixtures, fake credentials, and in-memory stores are confined behind the `test-support` feature flag, ensuring production builds remain free of test dependencies and secret leakage.\n\n### Dependency Structure\n- **Workspace-monorepo layout**: `lib/crates/` (Rust), `apps/` (frontend), and `lib/packages/` (TS clients) form a unified Cargo workspace, enabling shared dependency resolution, unified test runners (`cargo nextest run --workspace`), and incremental compilation.\n- **Unidirectional code generation flow**: `fabro-api.yaml` → `fabro-api` (Rust) & `fabro-api-client` (TS) → `fabro-server` & `fabro-web`. This prevents circular dependencies and keeps the wire contract stable across language boundaries.\n- **Trait-based pluggable providers**: `Sandbox` (local/Docker/Daytona), LLM providers, and event emitters use abstract interfaces, allowing runtime/environment swaps without modifying core orchestration or server code.\n- **Encapsulated integrations**: Third-party or external services (`fabro-github`, `fabro-slack`, `fabro-mcp`, `fabro-telemetry`, `fabro-devcontainer`) are isolated in dedicated crates, limiting blast radius when auth flows, rate limits, or SDKs change.\n\n### Modularity\n- **High compile-time isolation**: Each Rust crate is independently buildable and testable, supporting parallel CI execution, targeted PR reviews, and reduced merge conflicts.\n- **Strict internal module discipline**: Import conventions (`module::function()` for functions, named imports for types, no production globs) and `strum` derivation for enums prevent internal coupling drift and make refactoring predictable.\n- **Encapsulated tooling & release pipelines**: Dev commands (`cargo dev docker-build`, `cargo dev build`, `cargo dev release`) encapsulate CI/CD, Docker staging, and SPA asset bundling outside the main source tree, keeping product code focused on business logic.\n- **Checkpoint & resume as independent subsystems**: State serialization and branch management are extracted into `fabro-checkpoint`, allowing the workflow engine to remain stateless and focused on execution topology rather than persistence.\n- **Potential risk areas to monitor**:\n  - `fabro-server` may accumulate route handlers and middleware over time; without explicit route-splitting or plugin-based routing, it risks becoming a monolith.\n  - Heavy reliance on `build.rs` and progenitor generation requires strict discipline to avoid hidden compile-time coupling or schema drift if OpenAPI changes are not co-reviewed with Rust/TS consumers.\n  - Parallel branch failures (`parallel.results: 3x failed`) suggest integration or environment boundaries may be tight; ensuring test harnesses and sandbox providers are truly isolated (e.g., socket/daemon mocking, network stubbing) will improve modularity in CI.",
           "parallel.branch_count": 3,
           "internal.fidelity": "compact",
-          "current_node": "architecture",
+          "current_node": "merge",
           "thread.fork.current_node": "architecture",
           "graph.goal": "Perform a multi-perspective code review",
           "internal.retry_count.start": 0,
@@ -522,10 +525,19 @@
             "status": "partially_succeeded",
             "notes": "Parallel node dispatched 3 branches (0 succeeded, 3 failed)",
             "usage": null
+          },
+          "merge": {
+            "status": "failed",
+            "failure": {
+              "message": "all candidates failed",
+              "category": "deterministic"
+            },
+            "usage": null
           }
         },
-        "next_node_id": "merge",
+        "next_node_id": "report",
         "node_visits": {
+          "merge": 1,
           "fork": 1,
           "start": 1,
           "architecture": 1
@@ -643,7 +655,12 @@
       "first_event_seq": 43,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": "Stage completed: architecture",
+        "failure_reason": null,
+        "timestamp": "2026-05-27T15:55:47.342509088Z"
+      },
       "provider_used": {
         "mode": "prompt",
         "provider": "litellm",
@@ -656,15 +673,25 @@
       "output": null,
       "started_at": "2026-05-27T15:53:04.758501013Z",
       "handler": "prompt",
+      "timing": {
+        "wall_time_ms": 162583,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "total_tokens": 0,
+        "input_tokens": 4292,
+        "output_tokens": 2731,
+        "total_tokens": 7023,
         "reasoning_tokens": 0,
         "cache_read_tokens": 0,
         "cache_write_tokens": 0
       },
-      "state": "running"
+      "model": {
+        "provider": "litellm",
+        "model_id": "Qwen3.6-35B-A3B"
+      },
+      "state": "succeeded"
     }
   }
 }
