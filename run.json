@@ -330,7 +330,7 @@
     "kind": "running"
   },
   "status_updated_at": "2026-05-27T15:57:55.883357717Z",
-  "last_event_at": "2026-05-27T16:02:10.728016210Z",
+  "last_event_at": "2026-05-27T16:03:58.813264177Z",
   "pending_control": null,
   "checkpoints": [
     {
@@ -529,9 +529,9 @@
       }
     },
     {
-      "seq": 0,
+      "seq": 70,
       "checkpoint": {
-        "timestamp": "2026-05-27T16:03:55.564010717Z",
+        "timestamp": "2026-05-27T16:03:58.813149760Z",
         "current_node": "report",
         "completed_nodes": [
           "start",
@@ -541,16 +541,19 @@
         ],
         "node_retries": {},
         "context_values": {
-          "internal.retry_count.fork": 0,
-          "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
-          "parallel.fan_in.best_outcome": "succeeded",
-          "thread.merge.current_node": "report",
+          "failure_signature": "",
+          "internal.retry_count.merge": 0,
           "last_stage": "report",
-          "parallel.branch_count": 3,
-          "graph.goal": "Perform a multi-perspective code review",
-          "internal.run_id": "01KSN2FRHJ1QR8E5M9SPSNCT1C",
-          "last_response": "### Executive Summary\nAll pipeline stages (fork, merge, security, architecture, quality) completed successfully. No blocking failures were reported. However, the detailed findings, warnings, or sugges",
-          "internal.retry_count.start": 0,
+          "current_node": "report",
+          "graph.rankdir": "LR",
+          "internal.retry_count.report": 0,
+          "internal.fidelity": "compact",
+          "internal.node_visit_count": 1,
+          "internal.retry_count.fork": 0,
+          "internal.work_dir": "/workspace/fabro",
+          "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
+          "parallel.fan_in.best_id": "architecture",
+          "parallel.fan_in.best_outcome": "succeeded",
           "parallel.results": [
             {
               "id": "security",
@@ -568,25 +571,38 @@
               "head_sha": "63f8979cdd785dfff02e74bfb86b6b2ded2f97db"
             }
           ],
-          "current_node": "report",
-          "internal.node_visit_count": 1,
-          "thread.start.current_node": "fork",
-          "internal.thread_id": "merge",
-          "graph.rankdir": "LR",
-          "thread.fork.current_node": "merge",
-          "internal.fidelity": "compact",
-          "parallel.fan_in.best_id": "architecture",
-          "failure_class": "",
           "response.report": "### Executive Summary\nAll pipeline stages (fork, merge, security, architecture, quality) completed successfully. No blocking failures were reported. However, the detailed findings, warnings, or suggestions from the security, architecture, and quality scans were not included in your prompt. \n\nBelow is the exact synthesis structure requested, aligned with this repository’s architectural boundaries and CI practices. **Paste the raw scan outputs** and I will instantly populate this with your specific findings. In the meantime, the prioritization framework and action-item template are pre-aligned with the codebase’s documented constraints.\n\n---\n\n### Perspective Breakdown\n\n| Perspective | Focus Areas | Typical Signal Types | Priority Weight |\n|-------------|-------------|------------------------------------|\n| **Security** | Dependency CVEs, secret exposure, sandbox isolation, test-boundary enforcement | `HIGH/MEDIUM/CLOW` severity, leaked credentials, missing feature gates, unsafe sandbox mounts | 🔴 Critical if production-facing; 🟡 Medium if test-only |\n| **Architecture** | OpenAPI-first contract enforcement, `with_replacement` usage, sandbox trait abstraction, crate boundaries | Schema/Rust type drift, missing adapter tests, cross-crate coupling, deprecated patterns | 🟡 Medium-High (drives long-term maintainability & API stability) |\n| **Quality** | Strum migration compliance, snapshot drift, test feature gating, import style, lint/formatting | Pending insta snapshots, wildcard imports, un-gated test helpers, non-strum string/enum maps | 🟢 Medium (impacts dev velocity & CI stability) |\n\n---\n\n### Top 5 Prioritized Action Items\n*(Ordered by blast radius and fix cost. Replace bracketed items with your actual scan outputs.)*\n\n1. **🔒 Enforce Test-Boundary Gating**  \n   `[Security]` Prevent test-only helpers (`test_app_state`, `fake_creds`, etc.) from compiling into production binaries.  \n   *Action*: Verify all test fixtures use `#[cfg(any(test, feature = \"test-support\"))]` and dev-dependency dual-listing. Run `cargo build --workspace` without `test-support` to confirm zero leakage.\n\n2. **📐 Resolve OpenAPI ↔ Rust Type Drift**  \n   `[Architecture]` Eliminate parallel DTOs and `ApiFoo`/`foo_to_api` adapters that exist only to bridge accidental duplicates.  \n   *Action*: Run `with_replacement(...)` in `fabro-api/build.rs` for types with identical semantics. Add a `fabro-api` conformance test proving JSON parity before merging schema changes.\n\n3. **🔄 Migrate Hand-Written String/Int Maps to `strum`**  \n   `[Quality]` Replace `impl Display`/`FromStr`/`as_str()`/`const ALL` over enums with `#[derive(strum::Display, strum::EnumString, strum::EnumIter, etc.)]`.  \n   *Action*: Align `#[strum(serialize_all)]` with existing `#[serde(rename_all)]`. Keep wrappers only for public API stability. Remove drift-prone manual variant→string maps.\n\n4. **🧪 Stabilize Snapshot & Parallel Test Load**  \n   `[Quality]` Address pending `insta` snapshots and reduce FD contention during `cargo nextest`.  \n   *Action*: Run `cargo insta pending-snapshots`, verify each diff, then `cargo insta accept --snapshot <path>` for targeted acceptance. Ensure CI shells set `ulimit -n 4096` before parallel test runs.\n\n5. **🐳 Harden Sandbox & Provider Contracts**  \n   `[Architecture/Security]` Validate that clone-based providers (`Docker`, `Daytona`) strictly enforce the GitHub-origin or `skip_clone = true` contract, and that non-GitHub origins fail gracefully.  \n   *Action*: Add integration tests for `skip_clone = true` vs missing origin paths. Audit `DOCKER_HOST`/socket mount behavior to ensure it aligns with the trusted single-tenant deployment model.\n\n---\n\n### Next Steps\n- **Paste the raw findings** from each pipeline run (security, architecture, quality). I will instantly populate this report with exact file paths, line numbers, severity scores, and actionable remediation commands.\n- If you need this exported as a markdown/GitHub-ready PR comment, Docusaurus strategy doc, or Jira/Linear ticket batch, specify the format and I’ll generate it.",
-          "internal.retry_count.report": 0,
+          "parallel.branch_count": 3,
+          "internal.run_id": "01KSN2FRHJ1QR8E5M9SPSNCT1C",
+          "last_response": "### Executive Summary\nAll pipeline stages (fork, merge, security, architecture, quality) completed successfully. No blocking failures were reported. However, the detailed findings, warnings, or sugges",
+          "thread.fork.current_node": "merge",
           "outcome": "succeeded",
-          "internal.work_dir": "/workspace/fabro",
-          "internal.retry_count.merge": 0,
-          "failure_signature": ""
+          "internal.thread_id": "merge",
+          "failure_class": "",
+          "internal.retry_count.start": 0,
+          "thread.merge.current_node": "report",
+          "graph.goal": "Perform a multi-perspective code review",
+          "thread.start.current_node": "fork"
         },
         "node_outcomes": {
           "start": {
             "status": "succeeded",
+            "usage": null
+          },
+          "merge": {
+            "status": "succeeded",
+            "context_updates": {
+              "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
+              "parallel.fan_in.best_id": "architecture",
+              "parallel.fan_in.best_outcome": "succeeded"
+            },
+            "notes": "Selected best candidate: architecture",
+            "usage": null
+          },
+          "fork": {
+            "status": "succeeded",
+            "jump_to_node": "merge",
+            "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
             "usage": null
           },
           "report": {
@@ -617,36 +633,93 @@
                 }
               }
             }
-          },
-          "fork": {
-            "status": "succeeded",
-            "jump_to_node": "merge",
-            "notes": "Parallel node dispatched 3 branches (3 succeeded, 0 failed)",
-            "usage": null
-          },
-          "merge": {
-            "status": "succeeded",
-            "context_updates": {
-              "parallel.fan_in.best_head_sha": "117347628d4dd624617f0a1d7aa6ea2847e4c9f8",
-              "parallel.fan_in.best_id": "architecture",
-              "parallel.fan_in.best_outcome": "succeeded"
-            },
-            "notes": "Selected best candidate: architecture",
-            "usage": null
           }
         },
         "next_node_id": "exit",
+        "git_commit_sha": "bd9caaed46c87f5a464dd84b7c6c5c1ec9e9d03e",
         "node_visits": {
-          "start": 1,
-          "merge": 1,
           "report": 1,
-          "fork": 1
+          "fork": 1,
+          "start": 1,
+          "merge": 1
         }
       },
-      "diff": {}
+      "diff": {
+        "summary": {
+          "files_changed": 0,
+          "additions": 0,
+          "deletions": 0
+        }
+      }
     }
   ],
-  "conclusion": null,
+  "conclusion": {
+    "timestamp": "2026-05-27T16:03:58.826052552Z",
+    "status": "succeeded",
+    "timing": {
+      "wall_time_ms": 362929,
+      "inference_time_ms": 0,
+      "tool_time_ms": 0,
+      "active_time_ms": 0
+    },
+    "final_git_commit_sha": "bd9caaed46c87f5a464dd84b7c6c5c1ec9e9d03e",
+    "stages": [
+      {
+        "stage_id": "start",
+        "stage_label": "start",
+        "timing": {
+          "wall_time_ms": 0,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "fork",
+        "stage_label": "fork",
+        "timing": {
+          "wall_time_ms": 246707,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "merge",
+        "stage_label": "merge",
+        "timing": {
+          "wall_time_ms": 18,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      },
+      {
+        "stage_id": "report",
+        "stage_label": "report",
+        "timing": {
+          "wall_time_ms": 104841,
+          "inference_time_ms": 0,
+          "tool_time_ms": 0,
+          "active_time_ms": 0
+        },
+        "retries": 0
+      }
+    ],
+    "billing": {
+      "input_tokens": 8736,
+      "output_tokens": 7191,
+      "total_tokens": 15927,
+      "reasoning_tokens": 0,
+      "cache_read_tokens": 0,
+      "cache_write_tokens": 0
+    },
+    "total_retries": 0,
+    "diff": {}
+  },
   "sandbox": {
     "provider": "docker",
     "image": "fabro-v12",
@@ -724,11 +797,50 @@
       },
       "state": "succeeded"
     },
+    "exit@1": {
+      "first_event_seq": 73,
+      "prompt": null,
+      "response": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": null,
+        "failure_reason": null,
+        "timestamp": "2026-05-27T16:03:58.813264177Z"
+      },
+      "provider_used": null,
+      "diff": null,
+      "script_invocation": null,
+      "script_timing": null,
+      "parallel_results": null,
+      "output": null,
+      "started_at": "2026-05-27T16:03:58.813248593Z",
+      "handler": "exit",
+      "timing": {
+        "wall_time_ms": 0,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
+      "usage": {
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "total_tokens": 0,
+        "reasoning_tokens": 0,
+        "cache_read_tokens": 0,
+        "cache_write_tokens": 0
+      },
+      "state": "succeeded"
+    },
     "report@1": {
       "first_event_seq": 63,
       "prompt": null,
       "response": null,
-      "completion": null,
+      "completion": {
+        "outcome": "succeeded",
+        "notes": "Stage completed: report",
+        "failure_reason": null,
+        "timestamp": "2026-05-27T16:03:55.563739092Z"
+      },
       "provider_used": {
         "mode": "prompt",
         "provider": "litellm",
@@ -741,15 +853,25 @@
       "output": null,
       "started_at": "2026-05-27T16:02:10.721487251Z",
       "handler": "prompt",
+      "timing": {
+        "wall_time_ms": 104841,
+        "inference_time_ms": 0,
+        "tool_time_ms": 0,
+        "active_time_ms": 0
+      },
       "usage": {
-        "input_tokens": 0,
-        "output_tokens": 0,
-        "total_tokens": 0,
+        "input_tokens": 4491,
+        "output_tokens": 3335,
+        "total_tokens": 7826,
         "reasoning_tokens": 0,
         "cache_read_tokens": 0,
         "cache_write_tokens": 0
       },
-      "state": "running"
+      "model": {
+        "provider": "litellm",
+        "model_id": "Qwen3.6-35B-A3B"
+      },
+      "state": "succeeded"
     },
     "start@1": {
       "first_event_seq": 17,
