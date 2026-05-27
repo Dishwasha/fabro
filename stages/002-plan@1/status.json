@@ -1,0 +1,6 @@
+{
+  "outcome": "failed",
+  "notes": null,
+  "failure_reason": "LLM error: Invalid request to proxy: request (7630 tokens) exceeds the available context size (4096 tokens), try increasing it",
+  "timestamp": "2026-05-27T03:46:05.305788215Z"
+}
